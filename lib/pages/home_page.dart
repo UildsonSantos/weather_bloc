@@ -38,6 +38,16 @@ class _HomePageState extends State<HomePage> {
             },
             icon: const Icon(Icons.search),
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (context) {
+                  return const SettingsPage();
+                },
+              ));
+            },
+            icon: const Icon(Icons.settings),
+          ),
         ],
       ),
       body: _showWeather(),
@@ -161,8 +171,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  String showTemperature(WeatherState state) =>
-      '${state.weather.tempMin.toStringAsFixed(2)}℃';
+  String showTemperature(WeatherState state) {
+    final tempUnit = context.watch<TempSettingsCubit>().state.tempUnit;
+
+    if (tempUnit == TempUnit.fahrenheit) {
+      return '${((state.weather.tempMin * 9 / 5) + 32).toStringAsFixed(2)}℉';
+    }
+
+    return '${state.weather.tempMin.toStringAsFixed(2)}℃';
+  }
 
   FadeInImage showIcon(WeatherState state) {
     return FadeInImage.assetNetwork(

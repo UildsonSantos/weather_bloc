@@ -28,6 +28,9 @@ class MainApp extends StatelessWidget {
               weatherRepository: context.read<WeatherRepository>(),
             ),
           ),
+          BlocProvider<TempSettingsCubit>(
+            create: (context) => TempSettingsCubit(),
+          )
         ],
         child: MaterialApp(
           title: 'Weather App',
