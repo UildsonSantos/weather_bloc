@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recase/recase.dart';
+import 'package:weather_cubit/constants/constants.dart';
 import 'package:weather_cubit/cubits/cubits.dart';
 import 'package:weather_cubit/pages/pages.dart';
 import 'package:weather_cubit/widgets/widgets.dart';
@@ -73,13 +75,101 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         }
-        return Center(
-          child: Text(
-            state.weather.name,
-            style: const TextStyle(fontSize: 18.0),
-          ),
+        return ListView(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height / 6,
+            ),
+            Text(
+              state.weather.name,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 40.0,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  TimeOfDay.fromDateTime(state.weather.lastUpdated)
+                      .format(context),
+                  style: const TextStyle(fontSize: 18.0),
+                ),
+                const SizedBox(width: 10.0),
+                Text(
+                  '(${state.weather.country})',
+                  style: const TextStyle(fontSize: 18.0),
+                ),
+              ],
+            ),
+            const SizedBox(height: 60.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  showTemperature(state),
+                  style: const TextStyle(
+                    fontSize: 30.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 20.0),
+                Column(
+                  children: [
+                    Text(
+                      showTemperature(state),
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                    const SizedBox(height: 10.0),
+                    Text(
+                      // showTemperature(state.weather.tempMin),
+                      showTemperature(state),
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 40.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                const Spacer(),
+                // showIcon(state.weather.icon),
+                showIcon(state),
+                Expanded(
+                  flex: 3,
+                  child: formatText(state),
+                ),
+                const Spacer(),
+              ],
+            ),
+          ],
         );
       },
+    );
+  }
+
+  Text formatText(WeatherState state) {
+    final formattedString = state.weather.description.titleCase;
+    return Text(
+      formattedString,
+      style: const TextStyle(fontSize: 24.0),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  String showTemperature(WeatherState state) =>
+      '${state.weather.tempMin.toStringAsFixed(2)}℃';
+
+  FadeInImage showIcon(WeatherState state) {
+    return FadeInImage.assetNetwork(
+      placeholder: 'assets/images/loading.gif',
+      image: 'http://$kIconHost/img/wn/${state.weather.icon}@4x.png',
+      width: 96,
+      height: 96,
     );
   }
 }
