@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_cubit/cubits/cubits.dart';
 import 'package:weather_cubit/pages/pages.dart';
+import 'package:weather_cubit/widgets/widgets.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -45,14 +46,7 @@ class _HomePageState extends State<HomePage> {
     return BlocConsumer<WeatherCubit, WeatherState>(
       listener: (context, state) {
         if (state.status == WeatherStatus.error) {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                content: Text(state.error.errMsg),
-              );
-            },
-          );
+          errorDialog(context, state.error.errMsg);
         }
       },
       builder: (context, state) {
