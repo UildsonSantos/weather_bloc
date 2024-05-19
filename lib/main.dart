@@ -30,15 +30,24 @@ class MainApp extends StatelessWidget {
           ),
           BlocProvider<TempSettingsCubit>(
             create: (context) => TempSettingsCubit(),
-          )
+          ),
+          BlocProvider<ThemeCubit>(
+            create: (context) => ThemeCubit(
+              weatherCubit: context.read<WeatherCubit>(),
+            ),
+          ),
         ],
-        child: MaterialApp(
-          title: 'Weather App',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-              useMaterial3: true),
-          home: const HomePage(),
+        child: BlocBuilder<ThemeCubit, ThemeState>(
+          builder: (context, state) {
+            return MaterialApp(
+              title: 'Weather App',
+              debugShowCheckedModeBanner: false,
+              theme:state.appTheme == AppTheme.light
+                  ? ThemeData.light(useMaterial3: true)
+                  : ThemeData.dark(useMaterial3: true),
+              home: const HomePage(),
+            );
+          },
         ),
       ),
     );
